@@ -5,7 +5,7 @@ if(isset($_POST['submit'])){
       echo '<script>alert("Mobile Number field Empty...!!!!!!");</script>';
     }elseif(!preg_match("/^[+][9][1][6-9]{1}\d{9}$/", $mobile)){
   
-      echo '<script>alert("Invalid Indian Number");</script>';
+      echo '<script>alert("Invalid Indian Number. The number should start with +91 and should be a 10 digit number");</script>';
     }else{
                       echo "<center><h2>Mobile Number is valid:-$mobile</h2></center>";
             }
