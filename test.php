@@ -25,22 +25,14 @@ function test_input($data) {
 }
 ?>
 
-<h2>
-  <?php
-echo "<h3>Hello</h3>";
-echo $fname;
-echo " ";
-echo $lname;
-echo "<br>";
 
-?>
-</h2>
+
 <form name="Form" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
   FirstName: <input type="text" name="fname" id="first">
   <br><br>
   LastName: <input type="text" name="lname" id="last">
   <br><br>
-  FullName: <input type="text" name="fullname" id="full">
+  FullName: <input type="text" name="fullname" id="full" readonly="readonly">
   <br><br>
 
   <input type="submit" name="submit" value="Submit">  
@@ -59,12 +51,13 @@ echo "<br>";
 });
 </script>
 <?php
+if($_POST['submit']){
 echo "<h2>Hello</h2>";
 echo $fname;
 echo " ";
 echo $lname;
 echo "<br>";
-
+}
 ?>
 
 </body>
