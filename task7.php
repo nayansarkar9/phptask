@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>task7</title>
+  <title>task6</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -16,93 +16,22 @@
     td,th{
       width: 50%;
     }
+    .msg , .msgs{
+      display: none;
+    }
+    .error , .errornum{
+      color: red;
+    }
+    .correct , .correctnum{
+      color: green;
+    }
   </style>
 </head>
 <body>
-<?php
-  
-$conn = mysql_connect('demolempstack.local', 'nayan', 'Innoraft@1234');
-      $db   = mysql_select_db('Form');
-    
-// define variables and set to empty values
-$fname = $lname = $phonenumber= $email= $fullname= "";
-$emailErr="";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $fname = test_input($_POST["fname"]);
-  $lname = test_input($_POST["lname"]);
-  $phonenumber = test_input($_POST["phonenumber"]);
-  $email = test_input($_POST["email"]);
-  $fullname=test_input($_POST["fullname"]);
-}
-
-function test_input($data) {
-  $data = trim($data);
-  $data = stripslashes($data);
-  $data = htmlspecialchars($data);
-  return $data;
-}
-  if($_POST['submit']){
-    echo "<h2>Hello</h2>";
-echo "<i>$fname</i>";
-echo " ";
-echo "<i>$lname</i>";
-echo "<br>";
-  $mobile=$_POST['phonenumber'];
-  if(empty($mobile)){
-      echo '<script>alert("Mobile Number field Empty...!!!!!!");</script>';
-    }elseif(!preg_match("/^[+][9][1][6-9]{1}\d{9}$/", $mobile)){
-  
-      echo '<script>alert("Invalid Indian Number");</script>';
-    }else{
-                      echo "Mobile Number is:-$mobile";
-            }
-            echo "<br>";
-      if (empty($_POST["email"])) {
-    $emailErr = "*Email is required";
-  } else {
-    $email = test_input($_POST["email"]);
-    // check if e-mail address is well-formed
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-      echo "Invalid email format:- $email";
-    }
-    else
-      echo "<h2> E-mail $email</h2>";
-    
-  }
-  echo "<br>";
-   if(mysql_query("INSERT INTO Information VALUES('$fname', '$lname','$fullname','$phonenumber','$email')"))
-          echo "Successfully Inserted";
-        else
-          echo "Insertion Failed";
-$text = ($_POST['txtarea']);
-$array_data = explode(PHP_EOL, $text);
-$final_data = array();
-echo "<table border=1><caption>MARKSHEET</caption><tr><th>Subject</th><th>Marks</th></tr></table>";
-foreach ($array_data as $data){
-    $format_data = explode('|',$data);
-    $final_data[trim($format_data[0])] = trim($format_data[1]);
-    echo "<table border=1><tr><td>$format_data[0]</td><td>$format_data[1]</td></tr></table>";
-    if(mysql_query("INSERT INTO Marksheet VALUES('$fullname','$format_data[0]','$format_data[1]')"))
-         echo "";
-        else
-          echo "Insertion Failed";
-
-    
-          
-}
-echo "<br>";
-
-  }
- 
-
-
-?>
 
 
 
-
-<form name="Form" id="form" method="post" action="export.php">  
+<form name="Form" id="form" method="post" action="export.php" onsubmit="return post();">  
   FirstName: <input type="text" name="fname" id="first" placeholder="FirstName">
   <br><br>
   LastName: <input type="text" name="lname" id="last" placeholder="LastName">
@@ -110,13 +39,16 @@ echo "<br>";
   FullName: <input type="text" name="fullname" id="full" readonly="readonly" placeholder="FullName">
   <br><br>
   Contact Number<input type="text" name="phonenumber" placeholder="ContactNO." id="contact">
+  <span class="msgs errornum">*Invalid phone number</span><span class="msgs correctnum">Valid number</span>
+  <span id='error' ></span>
+
     <br><br>
 
-  E-mail: <input type="text" name="email" placeholder="E-mail" id="email">
+  E-mail: <input type="text" name="email" placeholder="E-mail" id="email"><span class="msg error">*Invalid email id</span><span class="msg correct">Valid Email</span>
   <br><br>
 <textarea cols="20" rows="10" name="txtarea" placeholder="Enter Your Subject & Marks" id="txtarea"></textarea>
 <br><br>
-  <input type="submit" name="submit" value="Submit">  
+  <input type="submit" name="submit" value="Submit" id="submit">  
 </form>
 <p id="success_para"></p>
 <script type="text/javascript">
@@ -130,10 +62,112 @@ echo "<br>";
         $('#full').val(str);
 
     });
+      $('input[name="email"]').blur(function () {
+   var email1 = $(this).val();
+var re = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/igm;
+if (re.test(email1)) {
+   $('.msg').hide();
+   $('.correct').show();
+   $('#submit').removeAttr("disabled");
+} else {
+   $('.msg').hide();
+   $('.error').show();
+   $("#submit").attr("disabled", true);
+
+}
+});$('input[name="phonenumber"]').blur(function () {
+   var num = $(this).val();
+var regex = /^([+][9][1])([6-9]{1})([0-9]{9})$/;
+if (regex.test(num)) {
+   $('.msgs').hide();
+   $('.correctnum').show();
+   $('#submit').removeAttr("disabled");
+} else {
+   $('.msgs').hide();
+   $('.errornum').show();
+   $("#submit").attr("disabled", true);
+}
+});
 });
 
 </script>
+ <script type="text/javascript">
+function post()
 
+{
+
+  var firstname = document.getElementById("first").value;
+  var lastname = document.getElementById("last").value;
+  var fullname = document.getElementById("full").value;
+  var phnumber = document.getElementById("contact").value;
+
+
+    var email = document.getElementById("email").value;
+    
+
+  var message = document.getElementById("txtarea").value;
+
+  if(firstname && lastname && fullname && phnumber && email && message)
+
+  {
+
+    $.ajax
+
+    ({
+
+      type: 'post',
+
+      url: 'validate.php',
+      
+
+      data: 
+
+      {
+
+        user_firstname:firstname,
+
+        user_lastname:lastname,
+        user_fullname:fullname,
+        user_contact:phnumber,
+
+      user_email:email,
+
+      user_message:message
+
+      },
+
+      success: function (response) 
+
+      {
+        
+        
+        
+        if(response == 0){
+          document.getElementById("success_para").innerHTML="Form Validations Failed";
+
+        }
+        if(response == 1)
+          document.getElementById("success_para").innerHTML="Form Submitted Successfully";
+        alert("download file");
+        window.open("export.php?email="+email+"&lname="+lastname+"&fname="+firstname+"&fullname="+fullname+"&number="+phnumber+"&message="+message);
+
+  
+
+      }
+      
+
+    });
+
+  }
+
+  
+
+  return false;
+
+}
+
+</script>
+</script> 
 
 </body>
 </html>
