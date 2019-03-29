@@ -141,7 +141,7 @@ function post()
       {
         
         
-        alert(response);
+        
         if(response == 0){
           document.getElementById("success_para").innerHTML="Form Validations Failed";
 

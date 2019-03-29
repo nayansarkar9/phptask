@@ -1,5 +1,6 @@
 <?php
-$conn = mysql_connect('demolempstack.local', 'nayan', 'Innoraft@1234');
+include "credentials.php";
+$conn = mysql_connect($server, $username, $password);
       $db   = mysql_select_db('Form');
 
 
