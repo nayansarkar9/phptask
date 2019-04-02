@@ -15,9 +15,9 @@ $page = (isset($_GET['page'])) ? $_GET['page'] : 0;
 
 $per_page=10;
 header("application/json; charset=utf-8");
- $token = 'f7d84412f205f13565a4ab70d1645bc2e6038cb3';
+
 //curl -I "https://api.github.com/search/repositories?q=stars:%3E=10000&sort=stars&order=desc&per_page=10";
-$curl_url="https://api.github.com/search/repositories?q=stars:%3E=10000&sort=stars&order=desc&page=".($page+1)."&per_page=".$per_page."&rel=next&access_token=".$token;
+$curl_url="https://api.github.com/search/repositories?q=stars:%3E=10000&sort=stars&order=desc&page=".($page+1)."&per_page=".$per_page."&rel=next";
 
   $ch = curl_init($curl_url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
